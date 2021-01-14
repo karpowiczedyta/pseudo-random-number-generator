@@ -1,0 +1,178 @@
+//---------------------------------------------------------------------------
+
+#include <vcl.h>
+#pragma hdrstop
+
+#include "Unit1.h"
+#include "random"
+#include "math.h"
+//---------------------------------------------------------------------------
+#pragma package(smart_init)
+#pragma resource "*.dfm"
+TForm1 *Form1;
+int nr = 0;
+int n, k; float p;
+
+float warBezwgl(float nr) {
+	if (nr < 0) {
+			  return nr*(-1);
+	} else return nr;
+}
+
+
+int bin(int n, float p) {
+
+	int binomial = 0;
+
+	for(int i=0; i<n; i++) {
+		float u = (float) rand()/RAND_MAX;
+		if (u < p) {
+			binomial++;
+		}
+	}
+	return binomial;
+}
+
+//---------------------------------------------------------------------------
+__fastcall TForm1::TForm1(TComponent* Owner)
+	: TForm(Owner)
+{
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm1::Button1Click(TObject *Sender)
+{
+ShellExecuteA(0, "open", "https://pl.wikipedia.org/wiki/Losowanie", NULL, NULL, SW_SHOWNORMAL);
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm1::Button2Click(TObject *Sender)
+{
+ShellExecuteA(0, "open", "https://pl.wikipedia.org/wiki/Losowanie", NULL, NULL, SW_SHOWNORMAL);
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm1::Button3Click(TObject *Sender)
+{
+ShellExecuteA(0, "open", "https://pl.wikipedia.org/wiki/Rozk%C5%82ad_dwumianowy", NULL, NULL, SW_SHOWNORMAL);
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm1::Button4Click(TObject *Sender)
+{
+ShellExecuteA(0, "open", "https://pl.wikipedia.org/wiki/Rozk%C5%82ad_Poissona", NULL, NULL, SW_SHOWNORMAL);
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm1::Button5Click(TObject *Sender)
+{
+ShellExecuteA(0, "open", "https://pl.wikipedia.org/wiki/Rozk%C5%82ad_hipergeometryczny", NULL, NULL, SW_SHOWNORMAL);
+}
+//---------------------------------------------------------------------------
+void __fastcall TForm1::RadioButton1Click(TObject *Sender)
+{
+    nr = 1;
+}
+//---------------------------------------------------------------------------
+void __fastcall TForm1::RadioButton2Click(TObject *Sender)
+{
+    nr = 2;
+}
+//---------------------------------------------------------------------------
+void __fastcall TForm1::RadioButton3Click(TObject *Sender)
+{
+   nr = 3;
+	StringGrid1->Cells[0][0] = "Nazwa";
+	StringGrid1->Cells[1][0] = "Wartoœæ";
+	StringGrid1->Cells[0][1] = "Œrednia";
+	StringGrid1->Cells[0][2] = "Mediana";
+	StringGrid1->Cells[0][3] = "Moda";
+	StringGrid1->Cells[0][4] = "Wariancja";
+	StringGrid1->Cells[0][5] = "Wspó³czynnik skoœnoœci";
+	StringGrid1->Cells[0][6] = "Kurtoza";
+
+}
+ //---------------------------------------------------------------------------
+void __fastcall TForm1::RadioButton4Click(TObject *Sender)
+{
+    nr = 4;
+}
+//---------------------------------------------------------------------------
+void __fastcall TForm1::RadioButton5Click(TObject *Sender)
+{
+	nr = 5;
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm1::Button8Click(TObject *Sender)
+{
+    this->Close();
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm1::Button7Click(TObject *Sender)
+{
+	RadioButton1->Checked=True;
+	Edit1->Text = "";
+	Edit2->Text = "";
+	Edit3->Text = "";
+	for(int i = 1; i<=8;i++)
+	StringGrid1->Cells[1][i] = "";
+}
+//---------------------------------------------------------------------------
+
+
+void __fastcall TForm1::Button6Click(TObject *Sender)
+{
+	n = StrToInt(Edit1->Text);
+	p = StrToFloat(Edit2->Text);
+	k = StrToInt(Edit3->Text);
+
+	if (n < 0) {
+		ShowMessage("Liczba prób musi byæ wiêksza b¹dŸ równa 0!");
+	}
+	if (p > 1 || p < 0) {
+	   ShowMessage("Prawdopodobieñstwo sukcesu musi zawieraæ siê w przedziale od 0 do 1!");
+	}
+	if (k > n || k < 0) {
+		ShowMessage("Noœnik musi zawieraæ siê w przedziale od 0 do n!");
+	}
+
+	float warOcz = 0.0;
+	warOcz = n*p;
+
+	float mediana = 0.0;
+	float a = warBezwgl(warOcz) - 1;
+	float b = warBezwgl(warOcz) + 1;
+	float c = warBezwgl(warOcz);
+
+	if( a < c && b > c) mediana = c;
+	else if(c < a && a < b) mediana = a;
+	else mediana = b;
+
+	float moda = 0.0;
+	moda = warBezwgl((n+1)*p);
+
+	float wariancja = 0.0;
+	wariancja = n*p*(1-p);
+
+	float wspSkos = 0.0;
+	wspSkos = (1 - (2*p));
+	wspSkos = wspSkos/sqrt(wariancja);
+
+	float kurtoza = 0.0;
+	kurtoza = 1 - (6*p*(1-p));
+	kurtoza = kurtoza / wariancja;
+
+	StringGrid1->Cells[1][1] = warOcz;
+	StringGrid1->Cells[1][2] = mediana;
+	StringGrid1->Cells[1][3] = moda;
+	StringGrid1->Cells[1][4] = wariancja;
+	StringGrid1->Cells[1][5] = wspSkos;
+	StringGrid1->Cells[1][6] = floorf(kurtoza * 100) / 100;
+
+	Memo1->Text = bin(n, p);
+
+}
+//---------------------------------------------------------------------------
+

@@ -1,0 +1,200 @@
+//---------------------------------------------------------------------------
+
+#include <vcl.h>
+#pragma hdrstop
+
+#include "Unit6.h"
+#include <iostream>
+#include <random>
+#include <sstream>
+#include <string>
+#include <cmath>
+#include <cstdlib>
+//---------------------------------------------------------------------------
+#pragma package(smart_init)
+#pragma resource "*.dfm"
+TForm6 *Form6;
+//---------------------------------------------------------------------------
+
+
+__fastcall TForm6::TForm6(TComponent* Owner)
+	: TForm(Owner)
+{       Memo1->Lines->Clear();
+}
+//---------------------------------------------------------------------------
+void __fastcall TForm6::Button3Click(TObject *Sender)
+{
+Edit1->Text="";
+Edit2->Text="";
+Edit3->Text="";
+ Edit4->Text="";
+ Edit5->Text="";
+ Edit6->Text="";
+ Edit7->Text="";
+ Edit8->Text="";
+  Edit10->Text="";
+ Edit11->Text="";
+ Edit12->Text="";
+ Edit13->Text="";
+ Edit14->Text="";
+ Edit15->Text="";
+ Edit16->Text="";
+ Edit17->Text="";
+ Edit18->Text="";
+ Edit19->Text="";
+ Edit20->Text="";
+ Edit21->Text="";
+ Edit22->Text="";
+ Memo1->Lines->Clear();
+this->Close();
+}
+//---------------------------------------------------------------------------
+void __fastcall TForm6::Button2Click(TObject *Sender)
+{
+Edit1->Text="";
+Edit2->Text="";
+Edit3->Text="";
+ Edit4->Text="";
+ Edit5->Text="";
+ Edit6->Text="";
+ Edit7->Text="";
+ Edit8->Text="";
+ Edit10->Text="";
+ Edit11->Text="";
+ Edit12->Text="";
+ Edit13->Text="";
+ Edit14->Text="";
+ Edit15->Text="";
+ Edit16->Text="";
+ Edit17->Text="";
+ Edit18->Text="";
+ Edit19->Text="";
+ Edit20->Text="";
+ Edit21->Text="";
+ Edit22->Text="";
+ Memo1->Lines->Clear();
+}
+//---------------------------------------------------------------------------
+void __fastcall TForm6::Button1Click(TObject *Sender)
+{
+int n;
+float p;
+float lambda;
+float wartocz;
+float ewartocz;
+float mediana;
+float emediana;
+float wariancja;
+float ewariancja;
+float skosnosc;
+float eskosnosc;
+float kurtoza;
+float ekurtoza;
+float odchylenie;
+float eodchylenie;
+int ilosc;
+int tablica[]={};
+
+	 Memo1->Text="";
+
+
+   if ((Edit1->Text.IsEmpty()) || (Edit2->Text.IsEmpty()) || (Edit10->Text.IsEmpty())) { ShowMessage("Nie wprowadzono wszystkich potrzebnych danych") ;
+
+   }     else {
+   ilosc=StrToInt(Edit10->Text);
+n=StrToInt(Edit1->Text);
+p=StrToFloat(Edit2->Text);
+if ((p<=0)||(p>1) || (n==0) || (ilosc<0)) {   ShowMessage("Wprowadzone dane s¹ b³êdne");
+
+}   else {
+lambda=n*p;
+Edit3->Text=CurrToStrF(lambda, ffNumber, 3);
+
+wartocz=lambda;
+Edit4->Text=CurrToStrF(wartocz, ffNumber, 3);
+
+mediana=lambda+1/3-0.02/lambda;
+Edit5->Text=CurrToStrF(mediana, ffNumber, 3);
+
+wariancja=lambda;
+Edit6->Text=CurrToStrF(wariancja, ffNumber, 3);
+
+skosnosc=sqrt(1/lambda);
+Edit7->Text=CurrToStrF(skosnosc, ffNumber, 3);
+
+kurtoza=1/lambda;
+Edit8->Text=CurrToStrF(kurtoza, ffNumber, 3);
+
+odchylenie=sqrt(lambda);
+Edit9->Text=CurrToStrF(odchylenie, ffNumber, 3);
+
+std::default_random_engine generator;
+std::poisson_distribution<int> distribution(lambda);
+
+
+for (int i=0; i<ilosc; ++i){
+Memo1->Text += distribution(generator);
+Memo1->Text += " ";
+
+}
+
+	ilosc=StrToInt(Edit10->Text);
+ for (int i=1; i<ilosc+1; ++i){
+tablica[i]=distribution(generator);
+
+} ;
+
+ilosc=StrToInt(Edit10->Text);
+
+//suma emp
+float suma=0;
+for (int i = 1; i<ilosc+1; i++) {
+	 suma=suma+tablica[i]    ;
+}
+Edit11->Text=CurrToStrF(suma/ilosc, ffNumber, 3) ;
+
+//mediana emp
+Edit12->Text=CurrToStrF(emediana, ffNumber, 3);
+
+//wariancja emp
+Edit13->Text=CurrToStrF(ewariancja, ffNumber, 3);
+
+//skosnosc emp
+Edit14->Text=CurrToStrF(eskosnosc, ffNumber, 3);
+
+//kurtoza emp
+Edit15->Text=CurrToStrF(ekurtoza, ffNumber, 3);
+
+//odchylenie standardowe emp
+Edit16->Text=CurrToStrF(eodchylenie, ffNumber, 3);
+
+//Ró¿nice
+Edit17->Text=CurrToStrF(abs(wartocz-ewartocz), ffNumber, 3);
+Edit18->Text=CurrToStrF(abs(mediana-emediana), ffNumber, 3);
+Edit19->Text=CurrToStrF(abs(wariancja-ewariancja), ffNumber, 3);
+Edit20->Text=CurrToStrF(abs(skosnosc-eskosnosc), ffNumber, 3);
+Edit21->Text=CurrToStrF(abs(kurtoza-ekurtoza), ffNumber, 3);
+Edit22->Text=CurrToStrF(abs(odchylenie-eodchylenie), ffNumber, 3);
+
+
+ 
+
+
+}}}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm6::Button4Click(TObject *Sender)
+{
+if (Memo1->Text.IsEmpty()) {  ShowMessage("Nie ma niczego do zapiania");}
+ else{
+
+
+SaveDialog1->Execute();
+SaveDialog1->Filter = "txt files (*.txt)|*.txt|All files (*.*)|*.*";
+SaveDialog1->FilterIndex = 2 ;
+Memo1->Lines->SaveToFile(SaveDialog1->FileName);
+
+} }
+//---------------------------------------------------------------------------
+
+
